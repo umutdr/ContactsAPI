@@ -1,4 +1,5 @@
-﻿using ContactsAPI.Data;
+﻿using ContactsAPI.Configs;
+using ContactsAPI.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,6 +35,11 @@ namespace ContactsAPI
                 .AddEntityFrameworkStores<DataContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddSwaggerGen(g =>
+            {
+                g.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Contacts API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +54,19 @@ namespace ContactsAPI
             {
                 app.UseHsts();
             }
+
+            var swaggerConfig = new SwaggerConfig();
+            Configuration.GetSection(nameof(swaggerConfig)).Bind(swaggerConfig);
+
+            app.UseSwagger(o =>
+            {
+                o.RouteTemplate = swaggerConfig.JsonRoute;
+            });
+
+            app.UseSwaggerUI(o =>
+            {
+                o.SwaggerEndpoint(swaggerConfig.UiEndpoint, swaggerConfig.Description);
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
