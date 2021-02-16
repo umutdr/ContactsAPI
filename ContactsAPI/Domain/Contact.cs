@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ContactsAPI.Domain
 {
-    public class Post
+    public class Contact
     {
         public string Id { get; set; }
     }
