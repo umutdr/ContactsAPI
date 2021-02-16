@@ -12,5 +12,8 @@ namespace ContactsAPI.Services
 
         Contact Get(Guid contactId);
 
+        bool Update(Contact contact);
+
+        bool Delete(Guid contactIdToDelete);
     }
 }

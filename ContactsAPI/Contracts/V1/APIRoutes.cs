@@ -8,16 +8,19 @@ namespace ContactsAPI.Contracts.V1
     public static class APIRoutes
     {
         private const string Root = "api";
-        private const string Version = "v1";
-        private const string Base = Root + "/" + Version;
+        private const string Version = "/v1";
+        private const string Base = Root + Version;
 
-        private const string ContactControllerBase = Base + "/contacts/";
+        private const string ContactControllerBase = Base + "/contacts";
+        private const string ContactIdParameter = "/{contactId}";
 
         public static class ContactControllerRoutes
         {
-            public const string Get = ContactControllerBase + "{contactId}";
-            public const string GetAll = ContactControllerBase;
-            public const string Create = ContactControllerBase;
+            public const string Get = ContactControllerBase + ContactIdParameter;    // [HttpGet]
+            public const string GetAll = ContactControllerBase;                 // [HttpGet]
+            public const string Create = ContactControllerBase;                 // [HttpPost]
+            public const string Update = ContactControllerBase + ContactIdParameter; // [HttpPut]
+            public const string Delete = ContactControllerBase + ContactIdParameter; // [HttpDelete]
         }
     }
 }

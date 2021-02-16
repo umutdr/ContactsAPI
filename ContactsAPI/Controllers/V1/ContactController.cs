@@ -1,6 +1,7 @@
 ﻿using ContactsAPI.Contracts;
 using ContactsAPI.Contracts.V1;
 using ContactsAPI.Contracts.V1.Requests;
+using ContactsAPI.Contracts.V1.Requests.Contact;
 using ContactsAPI.Contracts.V1.Responses;
 using ContactsAPI.Domain;
 using ContactsAPI.Services;
@@ -60,5 +61,34 @@ namespace ContactsAPI.Controllers.V1
 
             return Created(createdLocationUri, contactResponse);
         }
+
+        [HttpPut(APIRoutes.ContactControllerRoutes.Update)]
+        public IActionResult Update([FromRoute] Guid contactId, [FromBody] UpdateContactRequest contactRequest)
+        {
+            var contact = new Contact
+            {
+                Id = contactId,
+                FirstName = contactRequest.FirstName
+            };
+
+            var updated = _contactService.Update(contact);
+
+            if (updated)
+                return Ok(contact);
+
+            return NotFound();
+        }
+
+        [HttpDelete(APIRoutes.ContactControllerRoutes.Delete)]
+        public IActionResult Delete([FromRoute] Guid contactId)
+        {
+            var deleted = _contactService.Delete(contactId);
+
+            if (deleted)
+                return NoContent();
+
+            return NotFound();
+        }
+
     }
 }

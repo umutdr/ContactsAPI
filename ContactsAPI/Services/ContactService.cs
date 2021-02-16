@@ -35,5 +35,31 @@ namespace ContactsAPI.Services
         {
             return _contacts;
         }
+
+        public bool Update(Contact contactToUpdate)
+        {
+            var contact = Get(contactToUpdate.Id);
+
+            if (contact == null)
+                return false;
+
+            var index = _contacts.FindIndex(x => x.Id == contactToUpdate.Id);
+
+            _contacts[index] = contactToUpdate;
+
+            return true;
+        }
+
+        public bool Delete(Guid contactIdToDelete)
+        {
+            var contact = Get(contactIdToDelete);
+
+            if (contact == null)
+                return false;
+
+            _contacts.Remove(contact);
+
+            return true;
+        }
     }
 }
