@@ -7,6 +7,6 @@ namespace ContactsAPI.Contracts.V1.Responses
 {
     public class ContactResponse
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

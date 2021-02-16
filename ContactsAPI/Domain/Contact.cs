@@ -7,6 +7,8 @@ namespace ContactsAPI.Domain
 {
     public class Contact
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
+
+        public string FirstName { get; set; }
     }
 }

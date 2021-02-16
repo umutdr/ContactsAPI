@@ -3,6 +3,7 @@ using ContactsAPI.Contracts.V1;
 using ContactsAPI.Contracts.V1.Requests;
 using ContactsAPI.Contracts.V1.Responses;
 using ContactsAPI.Domain;
+using ContactsAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,42 +14,44 @@ namespace ContactsAPI.Controllers.V1
 {
     public class ContactController : Controller
     {
-        private List<Contact> _contacts;
+        private readonly IContactService _contactService;
 
-        public ContactController()
+        public ContactController(IContactService contactService)
         {
-            _contacts = new List<Contact>();
+            _contactService = contactService;
+        }
 
-            for (var i = 0; i < 5; i++)
-            {
-                _contacts.Add(new Contact()
-                {
-                    Id = Guid.NewGuid().ToString()
-                });
-            }
+        [HttpGet(APIRoutes.ContactControllerRoutes.Get)]
+        public IActionResult Get([FromRoute] Guid contactId)
+        {
+            var contact = _contactService.Get(contactId);
+
+            if (contact == null)
+                return NotFound();
+
+            return Ok(contact);
         }
 
         [HttpGet(APIRoutes.ContactControllerRoutes.GetAll)]
         public IActionResult GetAll()
         {
-            return Ok(_contacts);
+            var contacts = _contactService.GetAll();
+
+            return Ok(contacts);
         }
 
         [HttpPost(APIRoutes.ContactControllerRoutes.Create)]
         public IActionResult Create([FromBody] CreateContactRequest contactRequest)
         {
-            if (string.IsNullOrWhiteSpace(contactRequest.Id))
-                contactRequest.Id = Guid.NewGuid().ToString();
-
             var contact = new Contact
             {
-                Id = contactRequest.Id
+                Id = (contactRequest.Id != Guid.Empty ? contactRequest.Id : Guid.NewGuid())
             };
 
-            _contacts.Add(contact);
+            _contactService.GetAll().Add(contact);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var createdLocationUri = $"{baseUrl}/{APIRoutes.ContactControllerRoutes.Get.Replace("{contactId}", contactRequest.Id)}";
+            var createdLocationUri = $"{baseUrl}/{APIRoutes.ContactControllerRoutes.Get.Replace("{contactId}", contactRequest.Id.ToString())}";
 
             var contactResponse = new ContactResponse
             {

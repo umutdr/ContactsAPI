@@ -7,6 +7,6 @@ namespace ContactsAPI.Contracts.V1.Requests
 {
     public class CreateContactRequest
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
     }
 }
