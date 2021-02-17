@@ -8,12 +8,14 @@ namespace ContactsAPI.Services
 {
     public interface IContactService
     {
-        List<Contact> GetAll();
+        Task<List<Contact>> GetAllAsync();
 
-        Contact Get(Guid contactId);
+        Task<Contact> GetAsync(Guid contactId);
 
-        bool Update(Contact contact);
+        Task<bool> CreateAsync(Contact contact);
 
-        bool Delete(Guid contactIdToDelete);
+        Task<bool> UpdateAsync(Contact contact);
+
+        Task<bool> DeleteAsync(Guid contactIdToDelete);
     }
 }

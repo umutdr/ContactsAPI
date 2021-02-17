@@ -7,8 +7,6 @@ namespace ContactsAPI.Contracts.V1.Requests.Contact
 {
     public class CreateContactRequest
     {
-        public Guid Id { get; set; }
-
         public string FirstName { get; set; }
     }
 }

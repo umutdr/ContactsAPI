@@ -1,4 +1,6 @@
-﻿using ContactsAPI.Domain;
+﻿using ContactsAPI.Data;
+using ContactsAPI.Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,58 +10,51 @@ namespace ContactsAPI.Services
 {
     public class ContactService : IContactService
     {
-        private readonly List<Contact> _contacts;
+        private readonly DataContext _dataContext;
 
-        public ContactService()
+        public ContactService(DataContext dataContext)
         {
-            _contacts = new List<Contact>();
-
-            for (var i = 1; i <= 5; i++)
-            {
-                _contacts.Add(new Contact()
-                {
-                    Id = Guid.NewGuid(),
-                    FirstName = $"FirstName {i}"
-                });
-            }
+            _dataContext = dataContext;
         }
 
-        public Contact Get(Guid contactId)
+        public async Task<Contact> GetAsync(Guid contactId)
         {
-            var contact = _contacts.SingleOrDefault(x => x.Id == contactId);
-
-            return contact;
+            return await _dataContext.Contacts.SingleOrDefaultAsync(x => x.Id == contactId);
         }
 
-        public List<Contact> GetAll()
+        public async Task<List<Contact>> GetAllAsync()
         {
-            return _contacts;
+            return await _dataContext.Contacts.ToListAsync();
         }
 
-        public bool Update(Contact contactToUpdate)
+        public async Task<bool> CreateAsync(Contact contact)
         {
-            var contact = Get(contactToUpdate.Id);
+            await _dataContext.Contacts.AddAsync(contact);
 
-            if (contact == null)
-                return false;
+            bool saved = await _dataContext.SaveChangesAsync() > 0;
 
-            var index = _contacts.FindIndex(x => x.Id == contactToUpdate.Id);
-
-            _contacts[index] = contactToUpdate;
-
-            return true;
+            return saved;
         }
 
-        public bool Delete(Guid contactIdToDelete)
+        public async Task<bool> UpdateAsync(Contact contactToUpdate)
         {
-            var contact = Get(contactIdToDelete);
+            _dataContext.Contacts.Update(contactToUpdate);
 
-            if (contact == null)
-                return false;
+            bool saved = await _dataContext.SaveChangesAsync() > 0;
 
-            _contacts.Remove(contact);
-
-            return true;
+            return saved;
         }
+
+        public async Task<bool> DeleteAsync(Guid contactIdToDelete)
+        {
+            var contact = await GetAsync(contactIdToDelete);
+
+            _dataContext.Contacts.Remove(contact);
+
+            bool saved = await _dataContext.SaveChangesAsync() > 0;
+
+            return saved;
+        }
+
     }
 }

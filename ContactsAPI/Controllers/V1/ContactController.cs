@@ -1,14 +1,10 @@
-﻿using ContactsAPI.Contracts;
-using ContactsAPI.Contracts.V1;
-using ContactsAPI.Contracts.V1.Requests;
+﻿using ContactsAPI.Contracts.V1;
 using ContactsAPI.Contracts.V1.Requests.Contact;
-using ContactsAPI.Contracts.V1.Responses;
+using ContactsAPI.Contracts.V1.Responses.Contact;
 using ContactsAPI.Domain;
 using ContactsAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ContactsAPI.Controllers.V1
@@ -23,9 +19,9 @@ namespace ContactsAPI.Controllers.V1
         }
 
         [HttpGet(APIRoutes.ContactControllerRoutes.Get)]
-        public IActionResult Get([FromRoute] Guid contactId)
+        public async Task<IActionResult> Get([FromRoute] Guid contactId)
         {
-            var contact = _contactService.Get(contactId);
+            var contact = await _contactService.GetAsync(contactId);
 
             if (contact == null)
                 return NotFound();
@@ -34,36 +30,34 @@ namespace ContactsAPI.Controllers.V1
         }
 
         [HttpGet(APIRoutes.ContactControllerRoutes.GetAll)]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var contacts = _contactService.GetAll();
-
-            return Ok(contacts);
+            return Ok(await _contactService.GetAllAsync());
         }
 
         [HttpPost(APIRoutes.ContactControllerRoutes.Create)]
-        public IActionResult Create([FromBody] CreateContactRequest contactRequest)
+        public async Task<IActionResult> Create([FromBody] CreateContactRequest contactRequest)
         {
             var contact = new Contact
             {
-                Id = (contactRequest.Id != Guid.Empty ? contactRequest.Id : Guid.NewGuid())
+                FirstName = contactRequest.FirstName,
             };
 
-            _contactService.GetAll().Add(contact);
+            await _contactService.CreateAsync(contact);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var createdLocationUri = $"{baseUrl}/{APIRoutes.ContactControllerRoutes.Get.Replace("{contactId}", contactRequest.Id.ToString())}";
+            var createdLocationUri = $"{baseUrl}/{APIRoutes.ContactControllerRoutes.Get.Replace("{contactId}", contact.Id.ToString())}";
 
             var contactResponse = new ContactResponse
             {
-                Id = contact.Id
+                Id = contact.Id,
             };
 
             return Created(createdLocationUri, contactResponse);
         }
 
         [HttpPut(APIRoutes.ContactControllerRoutes.Update)]
-        public IActionResult Update([FromRoute] Guid contactId, [FromBody] UpdateContactRequest contactRequest)
+        public async Task<IActionResult> Update([FromRoute] Guid contactId, [FromBody] UpdateContactRequest contactRequest)
         {
             var contact = new Contact
             {
@@ -71,7 +65,7 @@ namespace ContactsAPI.Controllers.V1
                 FirstName = contactRequest.FirstName
             };
 
-            var updated = _contactService.Update(contact);
+            var updated = await _contactService.UpdateAsync(contact);
 
             if (updated)
                 return Ok(contact);
@@ -80,9 +74,9 @@ namespace ContactsAPI.Controllers.V1
         }
 
         [HttpDelete(APIRoutes.ContactControllerRoutes.Delete)]
-        public IActionResult Delete([FromRoute] Guid contactId)
+        public async Task<IActionResult> Delete([FromRoute] Guid contactId)
         {
-            var deleted = _contactService.Delete(contactId);
+            var deleted = await _contactService.DeleteAsync(contactId);
 
             if (deleted)
                 return NoContent();

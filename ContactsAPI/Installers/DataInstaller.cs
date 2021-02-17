@@ -18,7 +18,7 @@ namespace ContactsAPI.Installers
             services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<DataContext>();
 
-            services.AddSingleton<IContactService, ContactService>();
+            services.AddScoped<IContactService, ContactService>();
         }
     }
 }
