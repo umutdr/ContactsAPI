@@ -45,6 +45,11 @@ namespace ContactsAPI
                 app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseAuthentication();
+
             var swaggerConfig = new SwaggerConfig();
             Configuration.GetSection(nameof(swaggerConfig)).Bind(swaggerConfig);
 
@@ -57,9 +62,6 @@ namespace ContactsAPI
             {
                 o.SwaggerEndpoint(swaggerConfig.UiEndpoint, swaggerConfig.Description);
             });
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseMvc();
         }
