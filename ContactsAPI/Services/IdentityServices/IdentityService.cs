@@ -24,9 +24,44 @@ namespace ContactsAPI.Services.IdentityServices
             _jwtConfig = jwtConfig;
         }
 
+        public async Task<AuthenticationResult> LoginAsync(string email, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            /*
+                         if (user != null)
+                            return new AuthenticationResult
+                            {
+                                Errors = new[] { "User with this email is not found." },
+                            };
+
+                        var isUserPasswordValid = await _userManager.CheckPasswordAsync(user, password);
+
+                        if (!isUserPasswordValid)
+                        {
+                            return new AuthenticationResult
+                            {
+                                Errors = new[] { "Email and Password combination is wrong" },
+                            };
+                        }
+             */
+
+            var isUserPasswordValid = await _userManager.CheckPasswordAsync(user, password);
+
+            if (!isUserPasswordValid)
+            {
+                return new AuthenticationResult
+                {
+                    Errors = new[] { "Email and Password combination is might be wrong" },
+                };
+            }
+
+            return GenerateAuthResultForUser(user);
+        }
+
         public async Task<AuthenticationResult> RegisterAsync(string email, string password)
         {
-            // Bu satırı await ifadesini kaldırıp tetiklersek 
+            // Bu satırı, await ifadesini kaldırıp tetiklersek 
             // _userManager.FindByEmailAsync() metodu aslinda var olmayan bir user dönüyor ????????????????
             var existingUser = await _userManager.FindByEmailAsync(email);
 
@@ -52,6 +87,11 @@ namespace ContactsAPI.Services.IdentityServices
                 };
             }
 
+            return GenerateAuthResultForUser(newUser);
+        }
+
+        private AuthenticationResult GenerateAuthResultForUser(IdentityUser newUser)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
