@@ -1,5 +1,7 @@
 ﻿using ContactsAPI.Data;
 using ContactsAPI.Services;
+using ContactsAPI.Services.ContactInfoServices;
+using ContactsAPI.Services.ContactServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

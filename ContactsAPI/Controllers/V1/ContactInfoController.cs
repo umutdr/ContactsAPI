@@ -4,12 +4,17 @@ using ContactsAPI.Contracts.V1.Responses.ContactInfo;
 using ContactsAPI.Domain;
 using ContactsAPI.Models;
 using ContactsAPI.Services;
+using ContactsAPI.Services.ContactInfoServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ContactsAPI.Controllers.V1
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ContactInfoController : Controller
     {
         private readonly IContactInfoService _contactInfoService;

@@ -3,12 +3,16 @@ using ContactsAPI.Contracts.V1.Requests.Contact;
 using ContactsAPI.Contracts.V1.Responses.Contact;
 using ContactsAPI.Domain;
 using ContactsAPI.Services;
+using ContactsAPI.Services.ContactServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
 namespace ContactsAPI.Controllers.V1
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ContactController : Controller
     {
         private readonly IContactService _contactService;

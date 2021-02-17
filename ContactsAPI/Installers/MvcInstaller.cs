@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Swashbuckle.AspNetCore.Swagger;
+using ContactsAPI.Services.IdentityServices;
 
 namespace ContactsAPI.Installers
 {
@@ -21,6 +22,8 @@ namespace ContactsAPI.Installers
             var jwtConfig = new JWTConfig();
             Configuration.Bind(nameof(jwtConfig), jwtConfig);
             services.AddSingleton(jwtConfig);
+
+            services.AddScoped<IIdentityService, IdentityService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

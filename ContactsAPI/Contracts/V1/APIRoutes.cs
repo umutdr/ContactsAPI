@@ -37,5 +37,13 @@ namespace ContactsAPI.Contracts.V1
             public const string Delete = ContactInfoControllerBase + ContactInfoIdParameter;
         }
 
+        private const string IdentityControllerBase = Base + "/identity";
+        public static class IdentityControllerRoutes
+        {
+            public const string Login = IdentityControllerBase + "/login";
+            public const string Register = IdentityControllerBase + "/register";
+        }
+
+
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ContactsAPI.Services
+namespace ContactsAPI.Services.ContactServices
 {
     public interface IContactService
     {
@@ -17,5 +17,6 @@ namespace ContactsAPI.Services
         Task<bool> UpdateAsync(Contact contact);
 
         Task<bool> DeleteAsync(Guid contactIdToDelete);
+
     }
 }
