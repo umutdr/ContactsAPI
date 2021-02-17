@@ -15,22 +15,26 @@ namespace ContactsAPI.Contracts.V1
         private const string ContactIdParameter = "/{contactId}";
         public static class ContactControllerRoutes
         {
-            public const string Get = ContactControllerBase + ContactIdParameter;    // [HttpGet]
-            public const string GetAll = ContactControllerBase;                 // [HttpGet]
-            public const string Create = ContactControllerBase;                 // [HttpPost]
-            public const string Update = ContactControllerBase + ContactIdParameter; // [HttpPut]
-            public const string Delete = ContactControllerBase + ContactIdParameter; // [HttpDelete]
+            public const string Get = ContactControllerBase + ContactIdParameter;
+            public const string GetAll = ContactControllerBase;
+            public const string Create = ContactControllerBase;
+            public const string Update = ContactControllerBase + ContactIdParameter;
+            public const string Delete = ContactControllerBase + ContactIdParameter;
         }
 
         private const string ContactInfoControllerBase = Base + "/contactInfo";
         private const string ContactInfoIdParameter = "/{contactInfoId}";
+        private const string ContactInfoTypeParameter = "/{type}";
+        private const string ContactInfoByContactPart = "/bycontact";
         public static class ContactInfoControllerRoutes
         {
-            public const string Get = ContactInfoControllerBase + ContactInfoIdParameter;    // [HttpGet]
-            public const string GetAll = ContactInfoControllerBase;                 // [HttpGet]
-            public const string Create = ContactInfoControllerBase;                 // [HttpPost]
-            public const string Update = ContactInfoControllerBase + ContactInfoIdParameter; // [HttpPut]
-            public const string Delete = ContactInfoControllerBase + ContactInfoIdParameter; // [HttpDelete]
+            public const string Get = ContactInfoControllerBase + ContactInfoIdParameter;
+            public const string GetAll = ContactInfoControllerBase;
+            public const string GetAllByContact = ContactInfoControllerBase + ContactInfoByContactPart + ContactIdParameter;
+            public const string GetAllByContactAndType = ContactInfoControllerBase + ContactInfoByContactPart + ContactIdParameter + ContactInfoTypeParameter;
+            public const string Create = ContactInfoControllerBase;
+            public const string Update = ContactInfoControllerBase + ContactInfoIdParameter;
+            public const string Delete = ContactInfoControllerBase + ContactInfoIdParameter;
         }
 
     }

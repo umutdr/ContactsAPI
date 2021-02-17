@@ -8,5 +8,9 @@ namespace ContactsAPI.Contracts.V1.Requests.Contact
     public class UpdateContactRequest
     {
         public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string CompanyName { get; set; }
     }
 }

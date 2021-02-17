@@ -49,6 +49,9 @@ namespace ContactsAPI.Services
         {
             var contact = await GetAsync(contactIdToDelete);
 
+            if (contact == null)
+                return false;
+
             _dataContext.Contacts.Remove(contact);
 
             bool saved = await _dataContext.SaveChangesAsync() > 0;

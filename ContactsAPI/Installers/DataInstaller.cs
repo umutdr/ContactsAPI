@@ -19,6 +19,7 @@ namespace ContactsAPI.Installers
             services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<DataContext>();
 
             services.AddScoped<IContactService, ContactService>();
+            services.AddScoped<IContactInfoService, ContactInfoService>();
         }
     }
 }

@@ -41,6 +41,8 @@ namespace ContactsAPI.Controllers.V1
             var contact = new Contact
             {
                 FirstName = contactRequest.FirstName,
+                LastName = contactRequest.LastName,
+                CompanyName = contactRequest.CompanyName,
             };
 
             await _contactService.CreateAsync(contact);
@@ -51,6 +53,9 @@ namespace ContactsAPI.Controllers.V1
             var contactResponse = new ContactResponse
             {
                 Id = contact.Id,
+                FirstName = contact.FirstName,
+                LastName = contact.LastName,
+                CompanyName = contact.CompanyName,
             };
 
             return Created(createdLocationUri, contactResponse);
@@ -62,7 +67,9 @@ namespace ContactsAPI.Controllers.V1
             var contact = new Contact
             {
                 Id = contactId,
-                FirstName = contactRequest.FirstName
+                FirstName = contactRequest.FirstName,
+                LastName = contactRequest.LastName,
+                CompanyName = contactRequest.CompanyName,
             };
 
             var updated = await _contactService.UpdateAsync(contact);

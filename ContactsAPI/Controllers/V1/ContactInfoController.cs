@@ -2,6 +2,7 @@
 using ContactsAPI.Contracts.V1.Requests.ContactInfo;
 using ContactsAPI.Contracts.V1.Responses.ContactInfo;
 using ContactsAPI.Domain;
+using ContactsAPI.Models;
 using ContactsAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -35,6 +36,18 @@ namespace ContactsAPI.Controllers.V1
             return Ok(await _contactInfoService.GetAllAsync());
         }
 
+        [HttpGet(APIRoutes.ContactInfoControllerRoutes.GetAllByContact)]
+        public async Task<IActionResult> GetAllByContact([FromRoute] Guid contactId)
+        {
+            return Ok(await _contactInfoService.GetAllByContactAsync(contactId));
+        }
+
+        [HttpGet(APIRoutes.ContactInfoControllerRoutes.GetAllByContactAndType)]
+        public async Task<IActionResult> GetAllByContactAndType([FromRoute] Guid contactId, ContactInfoType type)
+        {
+            return Ok(await _contactInfoService.GetAllByContactAsync(contactId, type));
+        }
+
         [HttpPost(APIRoutes.ContactInfoControllerRoutes.Create)]
         public async Task<IActionResult> Create([FromBody] CreateContactInfoRequest contactInfoRequest)
         {
@@ -64,16 +77,17 @@ namespace ContactsAPI.Controllers.V1
         [HttpPut(APIRoutes.ContactInfoControllerRoutes.Update)]
         public async Task<IActionResult> Update([FromRoute] Guid contactInfoId, [FromBody] UpdateContactInfoRequest contactInfoRequest)
         {
-            var contactInfo = new ContactInfo
+            var updatedContactInfo = new ContactInfo
             {
+                Id = contactInfoId,
                 Content = contactInfoRequest.Content,
                 Type = contactInfoRequest.Type
             };
 
-            var updated = await _contactInfoService.UpdateAsync(contactInfo);
+            var updated = await _contactInfoService.UpdateAsync(updatedContactInfo);
 
             if (updated)
-                return Ok(contactInfo);
+                return Ok(updatedContactInfo);
 
             return NotFound();
         }

@@ -1,5 +1,6 @@
 ﻿using ContactsAPI.Data;
 using ContactsAPI.Domain;
+using ContactsAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,20 @@ namespace ContactsAPI.Services
             return await _dataContext.ContactInfos.ToListAsync();
         }
 
+        public async Task<List<ContactInfo>> GetAllByContactAsync(Guid contactId)
+        {
+            return await _dataContext.ContactInfos.Where(x => x.ContactId == contactId).ToListAsync();
+        }
+
+        public async Task<List<ContactInfo>> GetAllByContactAsync(Guid contactId, ContactInfoType type)
+        {
+            return await _dataContext.ContactInfos
+                    .Where(x =>
+                            x.ContactId == contactId &&
+                            x.Type == type)
+                    .ToListAsync();
+        }
+
         public async Task<bool> CreateAsync(ContactInfo contactInfo)
         {
             await _dataContext.ContactInfos.AddAsync(contactInfo);
@@ -38,7 +53,15 @@ namespace ContactsAPI.Services
 
         public async Task<bool> UpdateAsync(ContactInfo contactInfoToUpdate)
         {
-            _dataContext.ContactInfos.Update(contactInfoToUpdate);
+            var contactInfo = await GetAsync(contactInfoToUpdate.Id);
+
+            if (contactInfo == null)
+                return false;
+
+            contactInfo.Content = contactInfoToUpdate.Content;
+            contactInfo.Type = contactInfoToUpdate.Type;
+
+            _dataContext.ContactInfos.Update(contactInfo);
 
             bool saved = await _dataContext.SaveChangesAsync() > 0;
 
@@ -48,6 +71,9 @@ namespace ContactsAPI.Services
         public async Task<bool> DeleteAsync(Guid contactInfoIdToDelete)
         {
             var contactInfo = await GetAsync(contactInfoIdToDelete);
+
+            if (contactInfo == null)
+                return false;
 
             _dataContext.ContactInfos.Remove(contactInfo);
 
