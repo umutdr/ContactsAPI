@@ -119,5 +119,12 @@ namespace ContactsAPI.Controllers.V1
             return NotFound();
         }
 
+        //[AllowAnonymous]
+        [HttpGet(APIRoutes.ContactInfoControllerRoutes.GetReport)]
+        public async Task<IActionResult> GetReport()
+        {
+            return Ok(await _contactInfoService.GetReport());
+        }
+
     }
 }

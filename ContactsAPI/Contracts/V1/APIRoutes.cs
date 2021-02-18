@@ -35,6 +35,7 @@ namespace ContactsAPI.Contracts.V1
             public const string Create = ContactInfoControllerBase;
             public const string Update = ContactInfoControllerBase + ContactInfoIdParameter;
             public const string Delete = ContactInfoControllerBase + ContactInfoIdParameter;
+            public const string GetReport = ContactInfoControllerBase + "/report";
         }
 
         private const string IdentityControllerBase = Base + "/identity";

@@ -1,6 +1,7 @@
 ﻿using ContactsAPI.Data;
 using ContactsAPI.Domain;
 using ContactsAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -97,5 +98,57 @@ namespace ContactsAPI.Services.ContactInfoServices
             return true;
         }
 
+        public async Task<List<Report>> GetReport()
+        {
+            //var report = await _dataContext.ContactInfos
+            //     .Where(x => x.Type == ContactInfoType.Location)
+            //     .GroupBy(x => x.Content)
+            //     .Select(x =>
+            //        new Report
+            //        {
+            //            Location = x.Key,
+            //            LocationCount = x.Count(),
+            //        })
+            //     .OrderByDescending(x => x.LocationCount)
+            //     .ToListAsync();
+
+            var reportsList = new List<Report>();
+
+            var contactInfos = await GetAllAsync();
+            var locationsDistinct =
+                            contactInfos
+                                .Where(x => x.Type == ContactInfoType.Location)
+                                .Select(x => x.Content)
+                                .Distinct();
+
+            foreach (var location in locationsDistinct)
+            {
+                var contactInfosFiltered =
+                                    contactInfos
+                                    .Where(x =>
+                                        x.Type == ContactInfoType.Location &&
+                                        x.Content == location);
+
+                reportsList.Add(new Report
+                {
+                    Location = location,
+                    LocationCount = contactInfosFiltered.Count(),
+                    ContactCount =
+                        contactInfosFiltered
+                                .Select(x => x.ContactId)
+                                .Distinct()
+                                .Count(),
+                    ContactPhoneCount =
+                            _dataContext.ContactInfos
+                                .Where(x => 
+                                    x.Type == ContactInfoType.Phone &&
+                                    (contactInfosFiltered.Select(y => y.ContactId))
+                                        .Contains(x.ContactId) == true)
+                                .Count(),
+                });
+            }
+
+            return reportsList.OrderByDescending(x => x.LocationCount).ToList();
+        }
     }
 }
