@@ -35,16 +35,16 @@ namespace ContactsAPI.Tests
 
                             services.AddDbContext<DataContext>(options =>
                             {
-                                // Test ortamında asıl veritabanını kullanmak yerine, hafızada oluşturulan asıl veritabanının bir kopyası kullanılacak
-                                // Kopya veritabaninin ismini belirtiyor
+                                // Test ortamında asıl veritabanı yerine, hafızada oluşturulan TestDatabase adındaki kopya veritabanı kullanılacak
                                 options.UseInMemoryDatabase("TestDatabase");
                             });
                         });
                     });
+
             httpClient = appFactory.CreateClient();
         }
 
-        protected async Task AuthenticatiAsync()
+        protected async Task AuthenticationAsync()
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetJWTAsync());
         }

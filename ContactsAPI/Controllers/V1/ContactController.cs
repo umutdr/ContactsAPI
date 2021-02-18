@@ -63,8 +63,9 @@ namespace ContactsAPI.Controllers.V1
                 LastName = contact.LastName,
                 CompanyName = contact.CompanyName,
             };
+            var created = Created(createdLocationUri, contactResponse);
 
-            return Created(createdLocationUri, contactResponse);
+            return created;
         }
 
         [HttpPut(APIRoutes.ContactControllerRoutes.Update)]
