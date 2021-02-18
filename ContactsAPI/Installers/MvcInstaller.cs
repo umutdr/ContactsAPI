@@ -25,7 +25,8 @@ namespace ContactsAPI.Installers
 
             services.AddScoped<IIdentityService, IdentityService>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //services.AddMvc(options => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc(options => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddAuthentication(x =>
             {
@@ -71,9 +72,6 @@ namespace ContactsAPI.Installers
                                         Id = "Bearer"
                                     },
                                     Scheme = "oauth2",
-                                    Name = "Bearer",
-                                    In = ParameterLocation.Header,
-
                                 },
                                 new List<string>()
                             }

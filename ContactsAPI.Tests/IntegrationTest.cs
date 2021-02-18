@@ -17,10 +17,10 @@ using System.Threading.Tasks;
 
 namespace ContactsAPI.Tests
 {
-    public class IntegrationTest
+    public class IntegrationTest : IDisposable
     {
         protected readonly HttpClient httpClient;
-
+        private readonly IServiceProvider _serviceProvider;
         protected IntegrationTest()
         {
             var appFactory
@@ -41,6 +41,7 @@ namespace ContactsAPI.Tests
                         });
                     });
 
+            _serviceProvider = appFactory.Services;
             httpClient = appFactory.CreateClient();
         }
 
@@ -68,5 +69,15 @@ namespace ContactsAPI.Tests
 
             return registrationResponse.Token; // test ortaminda kullanilacak JWT
         }
+
+        public void Dispose()
+        {
+            using (var serviceScope = _serviceProvider.CreateScope())
+            {
+                var dataContext = serviceScope.ServiceProvider.GetService<DataContext>();
+                dataContext.Database.EnsureDeleted();
+            }
+        }
+
     }
 }

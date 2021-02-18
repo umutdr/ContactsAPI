@@ -10,7 +10,7 @@ namespace ContactsAPI.Controllers.V1
 {
     public class IdentityController : Controller
     {
-        private IIdentityService _identityService;
+        private readonly IIdentityService _identityService;
 
         public IdentityController(IIdentityService identityService)
         {
