@@ -11,7 +11,7 @@ namespace ContactsAPI.Contracts.V1
         private const string Version = "/v1";
         private const string Base = Root + Version;
 
-        private const string ContactControllerBase = Base + "/contacts";
+        private const string ContactControllerBase = Base + "/contact";
         private const string ContactIdParameter = "/{contactId}";
         public static class ContactControllerRoutes
         {
@@ -22,7 +22,7 @@ namespace ContactsAPI.Contracts.V1
             public const string Delete = ContactControllerBase + ContactIdParameter;
         }
 
-        private const string ContactInfoControllerBase = Base + "/contactInfo";
+        private const string ContactInfoControllerBase = Base + "/contactinfo";
         private const string ContactInfoIdParameter = "/{contactInfoId}";
         private const string ContactInfoTypeParameter = "/{type}";
         private const string ContactInfoByContactPart = "/bycontact";

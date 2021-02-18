@@ -59,5 +59,19 @@ namespace ContactsAPI.Services.ContactServices
             return saved;
         }
 
+        public async Task<bool> CheckUserForOwnership(Guid contactId, string userId)
+        {
+            var contact =
+                await _dataContext.Contacts
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(x =>
+                        x.Id == contactId &&
+                        x.OwnerUserId == userId);
+
+            if (contact == null)
+                return false;
+
+            return true;
+        }
     }
 }

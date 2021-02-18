@@ -3,8 +3,6 @@ using ContactsAPI.Contracts.V1.Requests.Identity;
 using ContactsAPI.Contracts.V1.Responses.Identity;
 using ContactsAPI.Services.IdentityServices;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 

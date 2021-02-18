@@ -21,5 +21,7 @@ namespace ContactsAPI.Services.ContactInfoServices
         Task<bool> UpdateAsync(ContactInfo contactInfo);
 
         Task<bool> DeleteAsync(Guid contactInfoId);
+
+        Task<bool> CheckUserForOwnership(Guid contactId, string userId);
     }
 }

@@ -28,24 +28,6 @@ namespace ContactsAPI.Services.IdentityServices
         {
             var user = await _userManager.FindByEmailAsync(email);
 
-            /*
-                         if (user != null)
-                            return new AuthenticationResult
-                            {
-                                Errors = new[] { "User with this email is not found." },
-                            };
-
-                        var isUserPasswordValid = await _userManager.CheckPasswordAsync(user, password);
-
-                        if (!isUserPasswordValid)
-                        {
-                            return new AuthenticationResult
-                            {
-                                Errors = new[] { "Email and Password combination is wrong" },
-                            };
-                        }
-             */
-
             var isUserPasswordValid = await _userManager.CheckPasswordAsync(user, password);
 
             if (!isUserPasswordValid)
@@ -90,7 +72,7 @@ namespace ContactsAPI.Services.IdentityServices
             return GenerateAuthResultForUser(newUser);
         }
 
-        private AuthenticationResult GenerateAuthResultForUser(IdentityUser newUser)
+        private AuthenticationResult GenerateAuthResultForUser(IdentityUser user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
@@ -98,10 +80,10 @@ namespace ContactsAPI.Services.IdentityServices
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, newUser.Email),
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim("id", newUser.Id),
+                    new Claim("userId", user.Id),
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

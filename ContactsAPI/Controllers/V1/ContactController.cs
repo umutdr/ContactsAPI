@@ -2,6 +2,7 @@
 using ContactsAPI.Contracts.V1.Requests.Contact;
 using ContactsAPI.Contracts.V1.Responses.Contact;
 using ContactsAPI.Domain;
+using ContactsAPI.Extensions;
 using ContactsAPI.Services;
 using ContactsAPI.Services.ContactServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -47,6 +48,7 @@ namespace ContactsAPI.Controllers.V1
                 FirstName = contactRequest.FirstName,
                 LastName = contactRequest.LastName,
                 CompanyName = contactRequest.CompanyName,
+                OwnerUserId = HttpContext.GetCurrentUserId(),
             };
 
             await _contactService.CreateAsync(contact);
@@ -68,13 +70,15 @@ namespace ContactsAPI.Controllers.V1
         [HttpPut(APIRoutes.ContactControllerRoutes.Update)]
         public async Task<IActionResult> Update([FromRoute] Guid contactId, [FromBody] UpdateContactRequest contactRequest)
         {
-            var contact = new Contact
-            {
-                Id = contactId,
-                FirstName = contactRequest.FirstName,
-                LastName = contactRequest.LastName,
-                CompanyName = contactRequest.CompanyName,
-            };
+            var isOwner = await _contactService.CheckUserForOwnership(contactId, HttpContext.GetCurrentUserId());
+
+            if (!isOwner)
+                return BadRequest(new { error = "You are not the owner of this contact" });
+
+            var contact = await _contactService.GetAsync(contactId);
+            contact.FirstName = contactRequest.FirstName;
+            contact.LastName = contactRequest.LastName;
+            contact.CompanyName = contactRequest.CompanyName;
 
             var updated = await _contactService.UpdateAsync(contact);
 
@@ -87,6 +91,11 @@ namespace ContactsAPI.Controllers.V1
         [HttpDelete(APIRoutes.ContactControllerRoutes.Delete)]
         public async Task<IActionResult> Delete([FromRoute] Guid contactId)
         {
+            var isOwner = await _contactService.CheckUserForOwnership(contactId, HttpContext.GetCurrentUserId());
+
+            if (!isOwner)
+                return BadRequest(new { error = "You are not the owner of this contact" });
+
             var deleted = await _contactService.DeleteAsync(contactId);
 
             if (deleted)

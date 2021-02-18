@@ -2,6 +2,7 @@
 using ContactsAPI.Contracts.V1.Requests.ContactInfo;
 using ContactsAPI.Contracts.V1.Responses.ContactInfo;
 using ContactsAPI.Domain;
+using ContactsAPI.Extensions;
 using ContactsAPI.Models;
 using ContactsAPI.Services;
 using ContactsAPI.Services.ContactInfoServices;
@@ -82,6 +83,11 @@ namespace ContactsAPI.Controllers.V1
         [HttpPut(APIRoutes.ContactInfoControllerRoutes.Update)]
         public async Task<IActionResult> Update([FromRoute] Guid contactInfoId, [FromBody] UpdateContactInfoRequest contactInfoRequest)
         {
+            var isOwner = await _contactInfoService.CheckUserForOwnership(contactInfoId, HttpContext.GetCurrentUserId());
+
+            if (!isOwner)
+                return BadRequest(new { error = "You are not the owner of this contact info" });
+
             var updatedContactInfo = new ContactInfo
             {
                 Id = contactInfoId,
@@ -100,6 +106,11 @@ namespace ContactsAPI.Controllers.V1
         [HttpDelete(APIRoutes.ContactInfoControllerRoutes.Delete)]
         public async Task<IActionResult> Delete([FromRoute] Guid contactInfoId)
         {
+            var isOwner = await _contactInfoService.CheckUserForOwnership(contactInfoId, HttpContext.GetCurrentUserId());
+
+            if (!isOwner)
+                return BadRequest(new { error = "You are not the owner of this contact info" });
+
             var deleted = await _contactInfoService.DeleteAsync(contactInfoId);
 
             if (deleted)
