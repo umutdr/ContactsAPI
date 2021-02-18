@@ -25,7 +25,6 @@ namespace ContactsAPI.Installers
 
             services.AddScoped<IIdentityService, IdentityService>();
 
-            //services.AddMvc(options => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddMvc(options => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddAuthentication(x =>
