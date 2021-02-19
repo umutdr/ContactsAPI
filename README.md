@@ -49,6 +49,7 @@ Projede [Redis](https://redis.io/) hizmeti kullanılmıştır. Bu sebeple redis 
 Aşağıdaki komutu, komut satırı istemcisinde çalıştırarak redis hizmetini başatabilirsiniz
 * `redis-server`
 > ![image](https://user-images.githubusercontent.com/42785142/108565186-54413880-7315-11eb-898d-e6187efb555a.png)
+- Redis kullanmadan projeyi çalıştırmak istiyorsanız appsettings.json içerisinde bulunan RedisCacheConfig.IsEnabled değerini false olarak atayabilirsiniz.
 
 .NET Core 3.1 SDK ve Runtime paketleri konusunda bir eksik yok ve çalışan bir Redis hizmetine sahipseniz projenin ilk defa derlenme aşamasına geçebiliriz. 
 
@@ -109,7 +110,7 @@ Tokeni girdikten sonra (eğer token geçerliyse) SwaggerUI sayfasında sergilene
 
 Kullandığınız JWT'nin ömrü oluşturulduğu andan itibaren 2 Saattir. Token erişiminizi kaybetmeniz durumunda Login route üzerinden aynı formatta bir POST isteği yaparak üyeliğinize ait yeni bir JWT elde edebilirsiniz. Yeni JWT ile yine aynı yöntemle endpointler üzerinde yetki elde edebilirsiniz
 
-#### Hazır Verilerin Veritabanına Eklenmesi
+### Hazır Verilerin Veritabanına Eklenmesi
 Web API üzerinde bulunan endpointlere istek attığımızda içi boş sonuçlar yerine anlamlı veriler görmek için "ContactsAPI_DummyData.sql" dosyasında bulunan scripti kullanarak tablolara veri eklenmesini sağlayabiliriz.
 
 Verileri ekledikten sonra eklenen veriler üzerinde değişiklik yapabilmek için aşağıdaki bilgileri kullanarak login routu üzerinden bir POST isteği yapmalısınız. İstek sonucunda oluşan JWT'yi kullanarak endpointler üzerinde yetki sahibi olabilir ve sql script'i aracılığıyla eklediğiniz verileri düzenleyebilirsiniz.
@@ -122,6 +123,9 @@ Verileri ekledikten sonra eklenen veriler üzerinde değişiklik yapabilmek içi
 ```
 
 ## Testlerin Gerçekleştirilmesi
+
+> Testler çalıştırıldığı anda appsettings.json içerisinde bulunan RedisCacheConfig.IsEnabled değeri true ise proje istekleri önbelleklemek için Redis hizmetini kullanacak demektir. Bu sebeple redis hizmetinin çalışır durumda olması gerekmektedir.
+> Redis kullanmadan testleri çalıştırmak istiyorsanız appsettings.json içerisinde bulunan RedisCacheConfig.IsEnabled değerini false olarak atayabilirsiniz.
 
 1. **Komut satırı istemcisi kullanarak**
 	1. "ContactsAPI.sln" dosyasının bulunduğu dizine erişin	
