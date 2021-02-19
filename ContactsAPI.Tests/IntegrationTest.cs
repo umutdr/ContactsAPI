@@ -71,13 +71,18 @@ namespace ContactsAPI.Tests
             var response = await httpClient.PostAsJsonAsync(APIRoutes.IdentityControllerRoutes.Register, new UserRegistrationRequest
             {
                 // 
-                Email = (Guid.NewGuid().ToString().Replace("-", "").Substring(0, 15)) + "@test.com",
+                Email = ReturnRandomGuidPart() + "@test.com",
                 Password = "Password123#"
             });
 
             var registrationResponse = await response.Content.ReadAsAsync<AuthSuccessResponse>();
 
             return registrationResponse.Token; // test ortaminda kullanilacak JWT
+        }
+
+        protected static string ReturnRandomGuidPart()
+        {
+            return (Guid.NewGuid().ToString().Replace("-", "").Substring(0, 15));
         }
 
         //public void Dispose()

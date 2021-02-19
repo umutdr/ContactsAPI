@@ -43,6 +43,7 @@ namespace ContactsAPI.Contracts.V1
         {
             public const string Login = IdentityControllerBase + "/login";
             public const string Register = IdentityControllerBase + "/register";
+            public const string AuthTest = IdentityControllerBase + "/authtest";
         }
 
 

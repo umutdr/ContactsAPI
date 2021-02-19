@@ -2,8 +2,11 @@
 using ContactsAPI.Contracts.V1.Requests.Identity;
 using ContactsAPI.Contracts.V1.Responses.Identity;
 using ContactsAPI.Services.IdentityServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ContactsAPI.Controllers.V1
@@ -49,6 +52,13 @@ namespace ContactsAPI.Controllers.V1
             {
                 Token = authResponse.Token,
             });
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet(APIRoutes.IdentityControllerRoutes.AuthTest)]
+        public OkResult AuthTest()
+        {
+            return Ok();
         }
     }
 }
