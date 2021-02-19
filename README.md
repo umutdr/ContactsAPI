@@ -20,7 +20,7 @@ Ya da, aşağıdaki bağlantıyı kullanarak proje dosyalarını indirmeniz müm
 https://github.com/umutdr/ContactsAPI/archive/master.zip
 `
 
-### Ön Gereksinimler
+## Ön Gereksinimler
 
 Bu WEB API projesi .NET Core 2.1 Ortamında oluşturulup sırasıyla .NET Core 2.2 -> 3.0 -> 3.1 sürümlerine güncellenmiştir.
 
@@ -52,7 +52,7 @@ Aşağıdaki komutu, komut satırı istemcisinde çalıştırarak redis hizmetin
 
 .NET Core 3.1 SDK ve Runtime paketleri konusunda bir eksik yok ve çalışan bir Redis hizmetine sahipseniz projenin ilk defa derlenme aşamasına geçebiliriz. 
 
-### İlk Derleme
+## İlk Derleme
 
 1. **Komut satırı istemcisi kullanarak**
 	1. "ContactsAPI.sln" dosyasının bulunduğu dizine erişin	
@@ -109,7 +109,19 @@ Tokeni girdikten sonra (eğer token geçerliyse) SwaggerUI sayfasında sergilene
 
 Kullandığınız JWT'nin ömrü oluşturulduğu andan itibaren 2 Saattir. Token erişiminizi kaybetmeniz durumunda Login route üzerinden aynı formatta bir POST isteği yaparak üyeliğinize ait yeni bir JWT elde edebilirsiniz. Yeni JWT ile yine aynı yöntemle endpointler üzerinde yetki elde edebilirsiniz
 
-## İlk Testlerin Gerçekleştirilmesi
+#### Hazır Verilerin Veritabanına Eklenmesi
+Web API üzerinde bulunan endpointlere istek attığımızda içi boş sonuçlar yerine anlamlı veriler görmek için "ContactsAPI_DummyData.sql" dosyasında bulunan scripti kullanarak tablolara veri eklenmesini sağlayabiliriz.
+
+Verileri ekledikten sonra eklenen veriler üzerinde değişiklik yapabilmek için aşağıdaki bilgileri kullanarak login routu üzerinden bir POST isteği yapmalısınız. İstek sonucunda oluşan JWT'yi kullanarak endpointler üzerinde yetki sahibi olabilir ve sql script'i aracılığıyla eklediğiniz verileri düzenleyebilirsiniz.
+
+```json
+{
+  "email": "admin@mail.com",
+  "password": "Admin123#"
+}
+```
+
+## Testlerin Gerçekleştirilmesi
 
 1. **Komut satırı istemcisi kullanarak**
 	1. "ContactsAPI.sln" dosyasının bulunduğu dizine erişin	
