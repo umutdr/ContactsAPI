@@ -60,7 +60,9 @@ Aşağıdaki komutu, komut satırı istemcisinde çalıştırarak redis hizmetin
     2. Projeleri "restore" edin, ardından derleyin
         - `dotnet restore`
         - `dotnet build`
-    3. ContactsAPI projesini çalıştırın
+    3. Veritabanının migration üzerinden güncelleyin
+    	- `dotnet ef database update`
+    4. ContactsAPI projesini çalıştırın
         - `cd .\ContactsAPI`
         - `dotnet run`
                
@@ -68,7 +70,10 @@ Aşağıdaki komutu, komut satırı istemcisinde çalıştırarak redis hizmetin
 	1. Projenin ana dizininde bulunan "ContactsAPI.sln"	dosyasını Visual Studio 2019 ile açın
 	2. Solution Explorer penceresinden mevcut Solution'a sağ tıklayıp "Restore NuGet Packages" seçeneğini seçin
     3. Yukarıdaki menü çubuğunda bulunan "Build" menüsü altındaki "Reuild Solution" seçeneğine tıklayın.
-    4. Klavyenizden F5 tuşuna basarak veya debug tools kısmındaki [> ContactsAPI] yazına tıklayarak projeyi çalıştırın.
+    4. Menü çubuğundan "View" menüsü altındaki "Other Windows" seçeneği üzerine gelin ve "Package Manager Console" seçeneğini tıklayın
+    5. Açılan Package Manager Console penceresine aşağıdaki komutu girin. Bu komut oluşturulan en son migration üzerinden veritabanını güncelleyecektir/oluşturacaktır. 
+        - `Update-Database`
+    6. Klavyenizden F5 tuşuna basarak veya debug tools kısmındaki [> ContactsAPI] yazına tıklayarak projeyi çalıştırın.
 
 Bu noktaya kadar her şey yolundaysa, arkada bir hata bırakmadıysak, redis hizmeti çalışıyorsa; projedeki endpointlerin sergilendiği SwaggerUI sayfasına aşağıdaki bağlantıyı kullanarak erişebiliriz.
 - `https://localhost:5001/swagger/index.html`
@@ -116,9 +121,9 @@ Kullandığınız JWT'nin ömrü oluşturulduğu andan itibaren 2 Saattir. Token
                
 2. **Visual Studio 2019 kullanarak**
 	1. Projenin ana dizininde bulunan "ContactsAPI.sln" dosyasını Visual Studio 2019 ile açın
-    	2. Yukarıdaki menü çubuğunda bulunan "Test" menüsü altındaki "Test Explorer" seçeneğine tıklayın.
-    	3. Açılan panelde mevcut olan testleri ayrı ayrı veya grup halinde çalıştırabilirsiniz.
-    	4. Çalıştırmak istediğiniz testin üstüne sağ tıklayıp "Run" seçeneğini tıklayın.
+    2. Yukarıdaki menü çubuğunda bulunan "Test" menüsü altındaki "Test Explorer" seçeneğine tıklayın.
+    3. Açılan panelde mevcut olan testleri ayrı ayrı veya grup halinde çalıştırabilirsiniz.
+    4. Çalıştırmak istediğiniz testin üstüne sağ tıklayıp "Run" seçeneğini tıklayın.
 > ![image](https://user-images.githubusercontent.com/42785142/108567255-f151a080-7318-11eb-9693-8e6aba377b8e.png)
 
 ## Kullanılan Teknolojiler
