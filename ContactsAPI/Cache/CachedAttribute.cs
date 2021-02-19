@@ -32,7 +32,7 @@ namespace ContactsAPI.Cache
 
             if (cacheConfig.IsEnabled == false)
             {
-                Console.WriteLine("Redis cache is not enabled");
+                Console.WriteLine("#@#@#@ #@#@#@ Redis cache is not enabled");
                 await next();
                 return;
             }
@@ -53,7 +53,7 @@ namespace ContactsAPI.Cache
 
                 context.Result = contentResult;
 
-                Console.WriteLine($"Cache found. Key: {cacheKey}");
+                Console.WriteLine($"#@#@#@ #@#@#@ Cache found. Key: {cacheKey}");
 
                 return;
             }

@@ -17,7 +17,7 @@ namespace ContactsAPI.Tests
     public class ContactControllerTests : IntegrationTest
     {
         [Fact]
-        public async Task Get_ShouldReturnTheMatchingRecord()
+        public async Task Get_ShouldReturnTheMatchingContact()
         {
             // Arrange
             await AuthenticationAsync();
@@ -31,10 +31,10 @@ namespace ContactsAPI.Tests
                     });
 
             // Act
-            var response 
+            var response
                 = await httpClient
                     .GetAsync(APIRoutes.ContactControllerRoutes.Get
-                        .Replace("{contactId}", 
+                        .Replace("{contactId}",
                     testContact.Id.ToString()));
 
             // Assert
@@ -60,13 +60,14 @@ namespace ContactsAPI.Tests
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var contacts = await response.Content.ReadAsAsync<List<Contact>>();
+            contacts.Should().BeOfType<List<Contact>>();
 
             // Bu test çalıştığında eğer anlık olarak hafızada oluşturulan veritabanı kullanımdaysa
             // contacts tablosu hep boş olacaktır. Çünkü test içerisinde bir ekleme yapılmıyor.
             // Asıl veritabanı devredeyken test çalıştırılırsa Contacts tablosunda veri olma ihtimaline karşın
             // aşağıdaki kontrolü yaptım.
             if (contacts.Count > 0)
-                contacts.Should().BeOfType<List<Contact>>();
+                contacts.Should().NotBeEmpty();
             else
                 contacts.Should().BeEmpty();
         }

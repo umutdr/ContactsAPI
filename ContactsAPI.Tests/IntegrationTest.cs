@@ -1,7 +1,9 @@
 ﻿using ContactsAPI.Contracts.V1;
 using ContactsAPI.Contracts.V1.Requests.Contact;
+using ContactsAPI.Contracts.V1.Requests.ContactInfo;
 using ContactsAPI.Contracts.V1.Requests.Identity;
 using ContactsAPI.Contracts.V1.Responses.Contact;
+using ContactsAPI.Contracts.V1.Responses.ContactInfo;
 using ContactsAPI.Contracts.V1.Responses.Identity;
 using ContactsAPI.Data;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -55,6 +57,13 @@ namespace ContactsAPI.Tests
             var response = await httpClient.PostAsJsonAsync(APIRoutes.ContactControllerRoutes.Create, request);
 
             return await response.Content.ReadAsAsync<ContactResponse>();
+        }
+
+        protected async Task<ContactInfoResponse> CreateContactInfoAsync(CreateContactInfoRequest request)
+        {
+            var response = await httpClient.PostAsJsonAsync(APIRoutes.ContactInfoControllerRoutes.Create, request);
+
+            return await response.Content.ReadAsAsync<ContactInfoResponse>();
         }
 
         private async Task<string> GetJWTAsync()

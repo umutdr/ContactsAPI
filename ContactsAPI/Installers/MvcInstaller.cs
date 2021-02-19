@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Swashbuckle.AspNetCore.Swagger;
 using ContactsAPI.Services.IdentityServices;
+using ContactsAPI.Cache;
 
 namespace ContactsAPI.Installers
 {
@@ -22,6 +23,10 @@ namespace ContactsAPI.Installers
             var jwtConfig = new JWTConfig();
             Configuration.Bind(nameof(jwtConfig), jwtConfig);
             services.AddSingleton(jwtConfig);
+
+            var redisCacheConfig = new RedisCacheConfig();
+            Configuration.Bind(nameof(RedisCacheConfig), redisCacheConfig);
+            services.AddSingleton(redisCacheConfig);
 
             services.AddScoped<IIdentityService, IdentityService>();
 

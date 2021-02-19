@@ -54,7 +54,7 @@ namespace ContactsAPI.Services.RedisCacheServices
 
                 await _distributedCache.RemoveAsync(_cacheKey);
 
-                Console.WriteLine($"Key: {_cacheKey} removed from cache.");
+                Console.WriteLine($"#@#@#@ #@#@#@ Cached Data is Updated. Key: {_cacheKey} removed from cache.");
             }
         }
     }
