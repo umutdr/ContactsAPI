@@ -1,4 +1,5 @@
-﻿using ContactsAPI.Contracts.V1;
+﻿using ContactsAPI.Cache;
+using ContactsAPI.Contracts.V1;
 using ContactsAPI.Contracts.V1.Requests.Contact;
 using ContactsAPI.Contracts.V1.Responses.Contact;
 using ContactsAPI.Domain;
@@ -24,6 +25,7 @@ namespace ContactsAPI.Controllers.V1
         }
 
         [HttpGet(APIRoutes.ContactControllerRoutes.Get)]
+        [Cached(60 * 10)]
         public async Task<IActionResult> Get([FromRoute] Guid contactId)
         {
             var contact = await _contactService.GetAsync(contactId);
@@ -35,6 +37,7 @@ namespace ContactsAPI.Controllers.V1
         }
 
         [HttpGet(APIRoutes.ContactControllerRoutes.GetAll)]
+        [Cached(60 * 10)]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _contactService.GetAllAsync());

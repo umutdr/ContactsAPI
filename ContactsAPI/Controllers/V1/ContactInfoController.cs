@@ -1,4 +1,5 @@
-﻿using ContactsAPI.Contracts.V1;
+﻿using ContactsAPI.Cache;
+using ContactsAPI.Contracts.V1;
 using ContactsAPI.Contracts.V1.Requests.ContactInfo;
 using ContactsAPI.Contracts.V1.Responses.ContactInfo;
 using ContactsAPI.Domain;
@@ -26,6 +27,7 @@ namespace ContactsAPI.Controllers.V1
         }
 
         [HttpGet(APIRoutes.ContactInfoControllerRoutes.Get)]
+        [Cached(60 * 10)]
         public async Task<IActionResult> Get([FromRoute] Guid contactInfoId)
         {
             var contactInfo = await _contactInfoService.GetAsync(contactInfoId);
@@ -37,18 +39,21 @@ namespace ContactsAPI.Controllers.V1
         }
 
         [HttpGet(APIRoutes.ContactInfoControllerRoutes.GetAll)]
+        [Cached(60 * 10)]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _contactInfoService.GetAllAsync());
         }
 
         [HttpGet(APIRoutes.ContactInfoControllerRoutes.GetAllByContact)]
+        [Cached(60 * 10)]
         public async Task<IActionResult> GetAllByContact([FromRoute] Guid contactId)
         {
             return Ok(await _contactInfoService.GetAllByContactAsync(contactId));
         }
 
         [HttpGet(APIRoutes.ContactInfoControllerRoutes.GetAllByContactAndType)]
+        [Cached(60 * 10)]
         public async Task<IActionResult> GetAllByContactAndType([FromRoute] Guid contactId, ContactInfoType type)
         {
             return Ok(await _contactInfoService.GetAllByContactAsync(contactId, type));
@@ -120,6 +125,7 @@ namespace ContactsAPI.Controllers.V1
         }
 
         //[AllowAnonymous]
+        [Cached(60*10)]
         [HttpGet(APIRoutes.ContactInfoControllerRoutes.GetReport)]
         public async Task<IActionResult> GetReport()
         {
