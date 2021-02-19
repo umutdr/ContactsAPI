@@ -32,6 +32,7 @@ namespace ContactsAPI.Cache
 
             if (cacheConfig.IsEnabled == false)
             {
+                Console.WriteLine("Redis cache is not enabled");
                 await next();
                 return;
             }
@@ -52,6 +53,8 @@ namespace ContactsAPI.Cache
 
                 context.Result = contentResult;
 
+                Console.WriteLine($"Cache found. Key: {cacheKey}");
+
                 return;
             }
 
@@ -65,7 +68,8 @@ namespace ContactsAPI.Cache
 
             if (executedContext.Result is OkObjectResult okObjectResult)
             {
-                await cacheService.CacheResponseAsync(cacheKey, okObjectResult.Value, TimeSpan.FromSeconds(_cacheTime));
+                await cacheService.CreateCacheResponseAsync(cacheKey, okObjectResult.Value, TimeSpan.FromSeconds(_cacheTime));
+                Console.WriteLine($"Cache not found but created. Key: {cacheKey}");
             }
         }
 
@@ -73,14 +77,20 @@ namespace ContactsAPI.Cache
         {
             var keyBuilder = new StringBuilder();
 
-            keyBuilder.Append($"{request.Path}");
+            keyBuilder.Append($"{request.Path}"); // api/v1/{controller}
 
             foreach (var (key, value) in request.Query.OrderBy(x => x.Key))
             {
-                keyBuilder.Append($"|{key}-{value}");
+                keyBuilder.Append($"{key}-{value}");
             }
 
-            return keyBuilder.ToString();
+            string cacheKey = keyBuilder.ToString();
+
+            // key olarak route kullandigim icin en bastaki '/' karakterinin olmamasi gerekiyor
+            if (cacheKey[0] == '/')
+                cacheKey = cacheKey.Remove(0, 1);
+
+            return cacheKey;
         }
     }
 }

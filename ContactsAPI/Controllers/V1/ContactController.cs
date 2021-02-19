@@ -6,6 +6,7 @@ using ContactsAPI.Domain;
 using ContactsAPI.Extensions;
 using ContactsAPI.Services;
 using ContactsAPI.Services.ContactServices;
+using ContactsAPI.Services.RedisCacheServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +19,12 @@ namespace ContactsAPI.Controllers.V1
     public class ContactController : Controller
     {
         private readonly IContactService _contactService;
+        private readonly IRedisCacheService _redisCacheService;
 
-        public ContactController(IContactService contactService)
+        public ContactController(IContactService contactService, IRedisCacheService redisCacheService)
         {
             _contactService = contactService;
+            _redisCacheService = redisCacheService;
         }
 
         [HttpGet(APIRoutes.ContactControllerRoutes.Get)]
@@ -66,9 +69,15 @@ namespace ContactsAPI.Controllers.V1
                 LastName = contact.LastName,
                 CompanyName = contact.CompanyName,
             };
-            var created = Created(createdLocationUri, contactResponse);
 
-            return created;
+            await _redisCacheService
+                .DeleteCachedResponseAsync(
+                    new string[]
+                    {
+                            HttpContext.Request.Path,
+                            APIRoutes.ContactControllerRoutes.GetAll
+                    });
+            return Created(createdLocationUri, contactResponse);
         }
 
         [HttpPut(APIRoutes.ContactControllerRoutes.Update)]
@@ -87,7 +96,17 @@ namespace ContactsAPI.Controllers.V1
             var updated = await _contactService.UpdateAsync(contact);
 
             if (updated)
+            {
+                await _redisCacheService
+                    .DeleteCachedResponseAsync(
+                        new string[]
+                        {
+                            HttpContext.Request.Path,
+                            APIRoutes.ContactControllerRoutes.GetAll
+                        });
+
                 return Ok(contact);
+            }
 
             return NotFound();
         }
@@ -103,7 +122,16 @@ namespace ContactsAPI.Controllers.V1
             var deleted = await _contactService.DeleteAsync(contactId);
 
             if (deleted)
+            {
+                await _redisCacheService
+                    .DeleteCachedResponseAsync(
+                        new string[]
+                        {
+                            HttpContext.Request.Path,
+                            APIRoutes.ContactControllerRoutes.GetAll
+                        });
                 return NoContent();
+            }
 
             return NotFound();
         }

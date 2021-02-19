@@ -7,8 +7,11 @@ namespace ContactsAPI.Services.RedisCacheServices
 {
     public interface IRedisCacheService
     {
-        Task CacheResponseAsync(string cacheKey, object response, TimeSpan cacheTime);
+        Task CreateCacheResponseAsync(string cacheKey, object response, TimeSpan cacheTime);
 
         Task<string> GetCachedResponseAsync(string cacheKey);
+
+        Task DeleteCachedResponseAsync(string[] cacheKey);
+
     }
 }

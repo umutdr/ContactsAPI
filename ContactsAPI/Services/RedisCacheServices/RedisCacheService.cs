@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using ContactsAPI.Cache;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,7 +19,14 @@ namespace ContactsAPI.Services.RedisCacheServices
             _distributedCache = distributedCache;
         }
 
-        public async Task CacheResponseAsync(string cacheKey, object response, TimeSpan cacheTime)
+        public async Task<string> GetCachedResponseAsync(string cacheKey)
+        {
+            var cachedResponse = await _distributedCache.GetStringAsync(cacheKey);
+
+            return string.IsNullOrEmpty(cachedResponse) ? null : cachedResponse;
+        }
+
+        public async Task CreateCacheResponseAsync(string cacheKey, object response, TimeSpan cacheTime)
         {
             if (response == null)
                 return;
@@ -32,11 +42,20 @@ namespace ContactsAPI.Services.RedisCacheServices
                     });
         }
 
-        public async Task<string> GetCachedResponseAsync(string cacheKey)
+        public async Task DeleteCachedResponseAsync(string[] cacheKeys)
         {
-            var cachedResponse = await _distributedCache.GetStringAsync(cacheKey);
+            string _cacheKey = "";
+            foreach (var cacheKey in cacheKeys)
+            {
+                _cacheKey = cacheKey;
+                // key olarak route kullandigim icin en bastaki '/' karakterinin olmamasi gerekiyor
+                if (_cacheKey[0] == '/')
+                    _cacheKey = _cacheKey.Remove(0, 1);
 
-            return string.IsNullOrEmpty(cachedResponse) ? null : cachedResponse;
+                await _distributedCache.RemoveAsync(_cacheKey);
+
+                Console.WriteLine($"Key: {_cacheKey} removed from cache.");
+            }
         }
     }
 }

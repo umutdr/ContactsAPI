@@ -7,6 +7,7 @@ using ContactsAPI.Extensions;
 using ContactsAPI.Models;
 using ContactsAPI.Services;
 using ContactsAPI.Services.ContactInfoServices;
+using ContactsAPI.Services.RedisCacheServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +21,12 @@ namespace ContactsAPI.Controllers.V1
     public class ContactInfoController : Controller
     {
         private readonly IContactInfoService _contactInfoService;
+        private readonly IRedisCacheService _redisCacheService;
 
-        public ContactInfoController(IContactInfoService contactInfoService)
+        public ContactInfoController(IContactInfoService contactInfoService, IRedisCacheService redisCacheService)
         {
             _contactInfoService = contactInfoService;
+            _redisCacheService = redisCacheService;
         }
 
         [HttpGet(APIRoutes.ContactInfoControllerRoutes.Get)]
@@ -82,6 +85,14 @@ namespace ContactsAPI.Controllers.V1
                 Type = contactInfo.Type,
             };
 
+            await _redisCacheService
+                .DeleteCachedResponseAsync(
+                    new string[]
+                    {
+                            HttpContext.Request.Path,
+                            APIRoutes.ContactInfoControllerRoutes.GetAll
+                    });
+
             return Created(getLocation, contactInfoResponse);
         }
 
@@ -103,7 +114,16 @@ namespace ContactsAPI.Controllers.V1
             var updated = await _contactInfoService.UpdateAsync(updatedContactInfo);
 
             if (updated)
+            {
+                await _redisCacheService
+                    .DeleteCachedResponseAsync(
+                        new string[]
+                        {
+                            HttpContext.Request.Path,
+                            APIRoutes.ContactInfoControllerRoutes.GetAll
+                        });
                 return Ok(updatedContactInfo);
+            }
 
             return NotFound();
         }
@@ -119,13 +139,23 @@ namespace ContactsAPI.Controllers.V1
             var deleted = await _contactInfoService.DeleteAsync(contactInfoId);
 
             if (deleted)
+            {
+                await _redisCacheService
+                    .DeleteCachedResponseAsync(
+                        new string[]
+                        {
+                            HttpContext.Request.Path,
+                            APIRoutes.ContactInfoControllerRoutes.GetAll
+                        });
+
                 return NoContent();
+            }
 
             return NotFound();
         }
 
         //[AllowAnonymous]
-        [Cached(60*10)]
+        [Cached(60 * 10)]
         [HttpGet(APIRoutes.ContactInfoControllerRoutes.GetReport)]
         public async Task<IActionResult> GetReport()
         {
