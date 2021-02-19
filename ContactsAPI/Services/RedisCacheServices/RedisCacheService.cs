@@ -44,7 +44,7 @@ namespace ContactsAPI.Services.RedisCacheServices
 
         public async Task DeleteCachedResponseAsync(string[] cacheKeys)
         {
-            string _cacheKey = "";
+            string _cacheKey;
             foreach (var cacheKey in cacheKeys)
             {
                 _cacheKey = cacheKey;

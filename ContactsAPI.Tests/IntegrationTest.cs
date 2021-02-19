@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace ContactsAPI.Tests
 {
-    public class IntegrationTest : IDisposable
+    public class IntegrationTest /*: IDisposable*/
     {
         protected readonly HttpClient httpClient;
         private readonly IServiceProvider _serviceProvider;
@@ -29,15 +29,15 @@ namespace ContactsAPI.Tests
                 = new WebApplicationFactory<Startup>()
                     .WithWebHostBuilder(builder =>
                     {
-                        // Bu blogu kaldırırsak test asıl veritabanını kullanacaktır.
+                        //Bu blogu kaldırırsak test asıl veritabanını kullanacaktır.
                         builder.ConfigureServices(services =>
                         {
                             // Projenin, asıl veritabanıyla iletişim kurmak için kullandığı servis devre dışı bırakıldı.
                             services.RemoveAll(typeof(DataContext));
 
+                            // Test ortamında asıl veritabanı yerine, hafızada oluşturulan TestDatabase adındaki kopya veritabanı kullanılacak
                             services.AddDbContext<DataContext>(options =>
                             {
-                                // Test ortamında asıl veritabanı yerine, hafızada oluşturulan TestDatabase adındaki kopya veritabanı kullanılacak
                                 options.UseInMemoryDatabase("TestDatabase");
                             });
                         });
@@ -70,7 +70,8 @@ namespace ContactsAPI.Tests
         {
             var response = await httpClient.PostAsJsonAsync(APIRoutes.IdentityControllerRoutes.Register, new UserRegistrationRequest
             {
-                Email = "integration@test.com",
+                // 
+                Email = (Guid.NewGuid().ToString().Replace("-", "").Substring(0, 15)) + "@test.com",
                 Password = "Password123#"
             });
 
@@ -79,14 +80,14 @@ namespace ContactsAPI.Tests
             return registrationResponse.Token; // test ortaminda kullanilacak JWT
         }
 
-        public void Dispose()
-        {
-            using (var serviceScope = _serviceProvider.CreateScope())
-            {
-                var dataContext = serviceScope.ServiceProvider.GetService<DataContext>();
-                dataContext.Database.EnsureDeleted();
-            }
-        }
+        //public void Dispose()
+        //{
+        //    using (var serviceScope = _serviceProvider.CreateScope())
+        //    {
+        //        var dataContext = serviceScope.ServiceProvider.GetService<DataContext>();
+        //        dataContext.Database.EnsureDeleted();
+        //    }
+        //}
 
     }
 }
