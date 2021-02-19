@@ -17,7 +17,6 @@ namespace ContactsAPI.Installers
             Configuration.GetSection(nameof(RedisCacheConfig)).Bind(redisCacheConfig);
             services.AddSingleton(redisCacheConfig);
 
-
             //if (redisCacheConfig.IsEnabled == false)
             //    return;
 

@@ -13,14 +13,19 @@ namespace ContactsAPI.Services.RedisCacheServices
     public class RedisCacheService : IRedisCacheService
     {
         private readonly IDistributedCache _distributedCache;
+        private readonly RedisCacheConfig _redisCacheConfig;
 
-        public RedisCacheService(IDistributedCache distributedCache)
+        public RedisCacheService(IDistributedCache distributedCache, RedisCacheConfig redisCacheConfig)
         {
             _distributedCache = distributedCache;
+            _redisCacheConfig = redisCacheConfig;
         }
 
         public async Task<string> GetCachedResponseAsync(string cacheKey)
         {
+            if (_redisCacheConfig.IsEnabled == false)
+                return null;
+
             var cachedResponse = await _distributedCache.GetStringAsync(cacheKey);
 
             return string.IsNullOrEmpty(cachedResponse) ? null : cachedResponse;
@@ -28,7 +33,7 @@ namespace ContactsAPI.Services.RedisCacheServices
 
         public async Task CreateCacheResponseAsync(string cacheKey, object response, TimeSpan cacheTime)
         {
-            if (response == null)
+            if (response == null || _redisCacheConfig.IsEnabled == false)
                 return;
 
             var serializedResponse = JsonConvert.SerializeObject(response);
@@ -44,6 +49,9 @@ namespace ContactsAPI.Services.RedisCacheServices
 
         public async Task DeleteCachedResponseAsync(string[] cacheKeys)
         {
+            if (_redisCacheConfig.IsEnabled == false)
+                return;
+
             string _cacheKey;
             foreach (var cacheKey in cacheKeys)
             {

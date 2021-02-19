@@ -24,10 +24,6 @@ namespace ContactsAPI.Installers
             Configuration.Bind(nameof(jwtConfig), jwtConfig);
             services.AddSingleton(jwtConfig);
 
-            var redisCacheConfig = new RedisCacheConfig();
-            Configuration.Bind(nameof(RedisCacheConfig), redisCacheConfig);
-            services.AddSingleton(redisCacheConfig);
-
             services.AddScoped<IIdentityService, IdentityService>();
 
             services.AddMvc(options => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
