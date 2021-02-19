@@ -17,8 +17,9 @@ namespace ContactsAPI.Installers
             Configuration.GetSection(nameof(RedisCacheConfig)).Bind(redisCacheConfig);
             services.AddSingleton(redisCacheConfig);
 
-            if (redisCacheConfig.IsEnabled == false)
-                return;
+
+            //if (redisCacheConfig.IsEnabled == false)
+            //    return;
 
             services.AddStackExchangeRedisCache(options =>
             {

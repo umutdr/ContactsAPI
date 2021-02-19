@@ -69,7 +69,7 @@ namespace ContactsAPI.Cache
             if (executedContext.Result is OkObjectResult okObjectResult)
             {
                 await cacheService.CreateCacheResponseAsync(cacheKey, okObjectResult.Value, TimeSpan.FromSeconds(_cacheTime));
-                Console.WriteLine($"Cache not found but created. Key: {cacheKey}");
+                Console.WriteLine($"#@#@#@ #@#@#@ Cache not found but created. Key: {cacheKey}");
             }
         }
 
